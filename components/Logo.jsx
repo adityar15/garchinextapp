@@ -3,7 +3,7 @@ import Image from 'next/image'
 export default function Logo() {
   return (
     <div className="relative h-32 w-32">
-        <Image src="https://garchi.s3.eu-west-2.amazonaws.com/whitelabel_assets/WhitelabelerLogo/WlabelLogo96T-1618570885.png"
+        <Image src={process.env.NEXT_PUBLIC_LOGO}
          layout="fill"
          objectFit='cover'
          objectPosition="center"

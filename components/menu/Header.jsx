@@ -4,7 +4,7 @@ import Logo from "../Logo"
 
 const NavLink = dynamic(()=>import(/*webpackChunkName:"navlink"*/ './NavLink'))
 const Hamburger = dynamic(()=>import(/*webpackChunkName: "hamburger"*/ './Hamburger'))
-
+const NavCart = dynamic(()=>import(/*webpackChunkName: "navcart"*/ '../cart/NavCart'))
 
 function Header() {
 
@@ -15,6 +15,7 @@ function Header() {
     <header className={`h-36 flex md:flex-row flex-col md:items-center w-full bg-red-400 md:justify-between overflow-hidden ${show && 'h-screen'} transition-all duration-200 ease-in-out`}>
         <div className="flex justify-between items-center">
             <Logo />
+            <NavCart className="md:hidden" />
             <Hamburger clicked={()=>setShow(!show)}/>
         </div>
 
@@ -23,6 +24,7 @@ function Header() {
             <NavLink href="/">Courses</NavLink>
             <NavLink href="/login">Login</NavLink>
             <NavLink href="/">Register</NavLink>
+            <NavCart className="hidden md:block" />
         </ul>
     </header>
   )
