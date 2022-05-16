@@ -4,6 +4,7 @@ import { Title, Form, FormGroup, Button } from "@adiranids/react-tailwind";
 import "@adiranids/react-tailwind/dist/style.css";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { localapi } from "../assets/api";
 
 const CenterCard = dynamic(() =>
   import(/*webpackChunkName:"centercard"*/ "../components/CenterCard")
@@ -19,6 +20,22 @@ export default function Login() {
 
   const handleLogin = (e) => {
       e.preventDefault()
+      setErrorMessageEmail("")
+      setErrorMessagePassword("")
+      localapi.post("/login", {email: email, password: password}).then(res =>{
+        console.log("response", res.data)
+      })
+      .catch(err =>{
+        if(err.response.data.error)
+        {
+          if(err.response.data.error.email)
+          setErrorMessageEmail(err.response.data.error.email[0])
+  
+          if(err.response.data.error.password)
+          setErrorMessagePassword(err.response.data.error.password[0])
+        }
+
+      })
   }
 
 

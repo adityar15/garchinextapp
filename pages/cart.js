@@ -1,15 +1,18 @@
 import Meta from "../components/Meta";
-import dynamic from 'next/dynamic';
-import {Title} from "@adiranids/react-tailwind"
-import "@adiranids/react-tailwind/dist/style.css"
+import dynamic from "next/dynamic";
+import { Title } from "@adiranids/react-tailwind";
+import "@adiranids/react-tailwind/dist/style.css";
 
-const CartTable = dynamic(()=>import(/*webpackChunkName:"carttable"*/ '../components/cart/CartTable'))
+import { parseCookies } from "nookies";
 
+const CartTable = dynamic(() =>
+  import(/*webpackChunkName:"carttable"*/ "../components/cart/CartTable")
+);
+const Payment = dynamic(() =>
+  import(/*webpackChunkName:"payment"*/ "../components/cart/Payment")
+);
 
 export default function Cart() {
-
-   
-  
   return (
     <>
       <Meta
@@ -18,16 +21,26 @@ export default function Cart() {
         title="Garchi Bootcamp | Cart"
       />
       <div className="w-full h-full mt-6 space-y-5">
-        <Title size="h1" className="text-center font-semibold">Cart</Title>
+        <Title size="h1" className="text-center font-semibold">
+          Cart
+        </Title>
         <CartTable />
+        {/* <Payment /> */}
       </div>
     </>
   );
 }
 
+export async function getServerSideProps(ctx) {
+  // Parse
+  const cookies = parseCookies();
+  console.log("cookies", cookies)
 
-
-
-
+  return {
+    props: {
+      cookies: cookies,
+    },
+  };
+}
 
 Cart.layout = "MainLayout";
