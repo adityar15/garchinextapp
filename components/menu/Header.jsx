@@ -21,10 +21,11 @@ function Header() {
 
   useEffect(() => {
     localapi.get("/loginstatus").then((res) => {
-      setIsLoggedIn(res.data);
+      console.log(res.data)
+      setIsLoggedIn(res.data.loggedIn);
       setShowMenu(true);
     });
-  });
+  }, []);
 
   return (
     <header

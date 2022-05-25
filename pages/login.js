@@ -6,6 +6,8 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { localapi } from "../assets/api";
 
+import { useRouter } from "next/router";
+
 const CenterCard = dynamic(() =>
   import(/*webpackChunkName:"centercard"*/ "../components/CenterCard")
 );
@@ -18,12 +20,15 @@ export default function Login() {
   const [errorMessageEmail, setErrorMessageEmail] = useState("");
   const [errorMessagePassword, setErrorMessagePassword] = useState("");
 
+  const router = useRouter()
+
   const handleLogin = (e) => {
       e.preventDefault()
       setErrorMessageEmail("")
       setErrorMessagePassword("")
       localapi.post("/login", {email: email, password: password}).then(res =>{
-        console.log("response", res.data)
+        // console.log("response", res.data)
+        router.replace("/")
       })
       .catch(err =>{
         if(err.response.data.error)

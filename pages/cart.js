@@ -3,16 +3,13 @@ import dynamic from "next/dynamic";
 import { Title } from "@adiranids/react-tailwind";
 import "@adiranids/react-tailwind/dist/style.css";
 
-import { parseCookies } from "nookies";
 
 const CartTable = dynamic(() =>
   import(/*webpackChunkName:"carttable"*/ "../components/cart/CartTable")
 );
-const Payment = dynamic(() =>
-  import(/*webpackChunkName:"payment"*/ "../components/cart/Payment")
-);
 
-export default function Cart() {
+
+export default function Cart({isLoggedIn}) {
   return (
     <>
       <Meta
@@ -24,21 +21,18 @@ export default function Cart() {
         <Title size="h1" className="text-center font-semibold">
           Cart
         </Title>
-        <CartTable />
-        {/* <Payment /> */}
+        <CartTable loggedIn={isLoggedIn} />
+        
       </div>
     </>
   );
 }
 
-export async function getServerSideProps(ctx) {
-  // Parse
-  const cookies = parseCookies();
-  console.log("cookies", cookies)
+export async function getServerSideProps({req}) {
 
   return {
     props: {
-      cookies: cookies,
+      isLoggedIn: req.cookies.uid ? true : false,
     },
   };
 }

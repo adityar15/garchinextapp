@@ -1,3 +1,5 @@
+import { localapi } from "./api";
+
 export class Cart {
   cart = [];
 
@@ -35,22 +37,21 @@ export class Cart {
 
       inCart.forEach((inCartItem) => {
         if (
-          inCartItem.attributes.length == 0 || JSON.stringify(inCartItem.attributes) == JSON.stringify(payload.attributes)
+          inCartItem.attributes.length == 0 ||
+          JSON.stringify(inCartItem.attributes) ==
+            JSON.stringify(payload.attributes)
         ) {
-          
           flag = true;
 
           this.cart = this.cart.map((item) => {
-            if(item.product_id != payload.id)
-                return item
+            if (item.product_id != payload.id) return item;
             else
-                  return {
-                    product_id: payload.id,
-                    product_name: payload.name,
-                    quantity: ++item.quantity,
-                    attributes: payload.attributes,
-                  };
-                       
+              return {
+                product_id: payload.id,
+                product_name: payload.name,
+                quantity: ++item.quantity,
+                attributes: payload.attributes,
+              };
           });
         }
       });
@@ -71,5 +72,48 @@ export class Cart {
 
     this.loadToStorage();
     return this.cart;
+  }
+
+  async getDisplayCart() {
+    let uniqueProductIDs = this.cart.map((item) => item.product_id);
+    uniqueProductIDs = [...new Set(uniqueProductIDs)];
+
+    const req = await localapi
+      .post("/getcartproducts", { products: uniqueProductIDs })
+
+
+    const {products} = await req.data 
+    
+    
+    
+    const displayCart = this.cart.map((cartItem) => {
+      const requiredProduct = products.filter(
+        (item) => item.id == cartItem.product_id
+      );
+
+      let attributePrice = 0;
+
+      if (cartItem.attributes.length > 0) {
+        attributePrice = cartItem.attributes.reduce((prev, current) => {
+          if (current)
+            return (
+              prev +
+              current.selected_options.reduce(
+                (sum, curr) => sum + curr.price,
+                0
+              )
+            );
+        }, 0);
+      }
+
+      return {
+        ...cartItem,
+        price: requiredProduct[0].price * cartItem.quantity,
+        extra: attributePrice * cartItem.quantity,
+      };
+    });  
+    
+
+    return displayCart
   }
 }
